@@ -1,19 +1,24 @@
 const Discord = require('discord.js')
 const Axios = require('axios')
 const cron = require("node-cron")
-const { discord_token } = require("./config.json")
+
+// const { discord_token } = require("./config.json")
+discord_token = process.env.BOT_TOKEN
 
 //
 // Global variables
 //
 const client = new Discord.Client()
 
-let bearer_token = "eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MjUzNTg4OTMsInN1YiI6IjI2MDUwOTIiLCJpYXQiOjE2MjUzNTcwOTMsInByb2ZpbGUiOiJ7XCJ1c2VySWRcIjpcIjI2MDUwOTJcIixcInJvbGVzXCI6W1wiSm9lUHVibGljXCJdfSJ9.y8c0DiQ_Rbz9K2_PctW9kc415vhQJzGsZHfMObGJpR4"
-let driver_last_name = "CHOY"
-let driver_license_num = "2605092"
-let driver_keyword = "Coco"
+let bearer_token
+let driver_last_name
+let driver_license_num
+let driver_keyword
+
 const getAvailableAppointmentsEndpoint = "https://onlinebusiness.icbc.com/deas-api/v1/web/getAvailableAppointments"
 const loginEndpoint = "https://onlinebusiness.icbc.com/deas-api/v1/webLogin/webLogin"
+
+
 const prefix = "!"
 
 
@@ -33,7 +38,7 @@ let general_channel
 
 client.once('ready', () => {
 	console.log("Connected as " + client.user.tag)
-    general_channel = client.channels.cache.get("860994048831914037")
+    general_channel = client.channels.cache.get(general_channel_id)
 })
 
 client.on('message', (message) => {
