@@ -49,10 +49,9 @@ client.on('message', (message) => {
 
 	switch(command) {
         case "relogin":
-            reLogin()
-            break
-        case "set_token":
-            bearer_token = args[0]
+            if (verifyAllDriverInfo()) {
+                reLogin()
+            }
             break
         case "set_driver_last_name":
             driver_last_name = args[0]
@@ -64,26 +63,15 @@ client.on('message', (message) => {
             driver_keyword = args[0]
             break
         case "fetch":
-            getAvailableAppointmentsEndpointForAllLocations(true)
+            if (verifyAllDriverInfo()) {
+                getAvailableAppointmentsEndpointForAllLocations(true)
+            }
             break
         case "start":
-            if (bearer_token && driver_last_name && driver_license_num && driver_keyword) {
+            if (verifyAllDriverInfo()) {
                 task.start()
-            } else {
-                message.channel.send("The following settings are missing:")
-                if (!bearer_token) {
-                    message.channel.send("Bearer Token")
-                }
-                if (!driver_last_name) {
-                    message.channel.send("Driver Last Name")
-                }
-                if (!driver_license_num) {
-                    message.channel.send("Driver License Number")
-                }
-                if (!driver_keyword) {
-                    message.channel.send("Driver Keyword")
-                }
-            }
+                message.channel.send("Job started")
+            } 
             break
         case "stop":
             task.stop()
@@ -148,6 +136,23 @@ const fetchAvailableAppointments = async (location_id) => {
 // Services
 //
 
+const verifyAllDriverInfo = () => {
+    if (bearer_token && driver_last_name && driver_license_num && driver_keyword) {
+        return true
+    } else {
+        general_channel.send("The following settings are missing:")
+        if (!driver_last_name) {
+            general_channel.send("Driver Last Name")
+        }
+        if (!driver_license_num) {
+            general_channel.send("Driver License Number")
+        }
+        if (!driver_keyword) {
+            general_channel.send("Driver Keyword")
+        }
+    }
+}
+
 const getAvailableAppointmentsEndpointForAllLocations = (verbose=false) => {
     for (const [key, value] of Object.entries(location_dict)) {
         fetchAvailableAppointments(value).then(response => {
@@ -173,7 +178,7 @@ const getAvailableAppointmentsEndpointForAllLocations = (verbose=false) => {
 //
 
 const task = cron.schedule('* * * * *', () => {
-    getAvailableAppointmentsEndpointForAllLocabearer_tokentions()
+    getAvailableAppointmentsEndpointForAllLocations()
 }, {
     scheduled: false
 })
