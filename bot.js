@@ -137,7 +137,7 @@ const fetchAvailableAppointments = async (location_id) => {
 //
 
 const verifyAllDriverInfo = () => {
-    if (bearer_token && driver_last_name && driver_license_num && driver_keyword) {
+    if (driver_last_name && driver_license_num && driver_keyword) {
         return true
     } else {
         general_channel.send("The following settings are missing:")
