@@ -75,6 +75,8 @@ client.on('message', (message) => {
             break
         case "stop":
             task.stop()
+            message.channel.send("Job stopped")
+            break
         case "print":eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MjUzNTg4OTMsInN1YiI6IjI2MDUwOTIiLCJpYXQiOjE2MjUzNTcwOTMsInByb2ZpbGUiOiJ7XCJ1c2VySWRcIjpcIjI2MDUwOTJcIixcInJvbGVzXCI6W1wiSm9lUHVibGljXCJdfSJ9.y8c0DiQ_Rbz9K2_PctW9kc415vhQJzGsZHfMObGJpR4
             message.channel.send(
                 `Bearer Token: ${bearer_token} | Driver Last Name: ${driver_last_name} | Driver Lisence Number: ${driver_license_num} | Driver Keyword: ${driver_keyword}`
@@ -116,17 +118,26 @@ const fetchAvailableAppointments = async (location_id) => {
         examDate: new Date().toISOString().split("T")[0],
         examType: "7-R-1",
         ignoreReserveTime: false,
-        lastName: driver_last_name,
+        lastName: driver_last_name, 
         licenseNumber: driver_license_num,
         prfDaysOfWeek: "[0,1,2,3,4,5,6]",
         prfPartsOfDay: "[0,1]",
     };
+
+    let response
     
-    const response = await Axios.post( 
-      getAvailableAppointmentsEndpoint,
-      bodyParameters,
-      config
-    )
+    try {
+        response = await Axios.post( 
+            getAvailableAppointmentsEndpoint,
+            bodyParameters,
+            config
+          )
+    } catch (err) {
+        if (err.response) {
+            await reLogin()
+            return fetchAvailableAppointments(location_id)
+        }
+    }
 
     return response.data
 }
@@ -163,7 +174,7 @@ const getAvailableAppointmentsEndpointForAllLocations = (verbose=false) => {
                     general_channel.send(`No available appointments found for ${key}`)
                 }
             } else {
-                general_channel.send(`@here Appointment found for ${key}`)
+                general_channel.send(`@everyone Appointment found for ${key}`)
                 for (appointment of response) {
                     console.log(appointment)
                     general_channel.send(JSON.stringify(appointment, null, 2))
