@@ -2,8 +2,9 @@ const Discord = require('discord.js')
 const Axios = require('axios')
 const cron = require("node-cron")
 
-// const { discord_token } = require("./config.json")
+// const { discord_token, general_channel_id } = require("./config.json")
 discord_token = process.env.BOT_TOKEN
+general_channel_id = process.env.GENERAL_CHANNEL_ID
 
 //
 // Global variables
@@ -27,7 +28,6 @@ const location_dict = {
     richmond_driver_licensing: 93
 }
 
-const general_channel_id = "860994048831914037"
 let general_channel
 
 
@@ -77,9 +77,9 @@ client.on('message', (message) => {
             task.stop()
             message.channel.send("Job stopped")
             break
-        case "print":eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MjUzNTg4OTMsInN1YiI6IjI2MDUwOTIiLCJpYXQiOjE2MjUzNTcwOTMsInByb2ZpbGUiOiJ7XCJ1c2VySWRcIjpcIjI2MDUwOTJcIixcInJvbGVzXCI6W1wiSm9lUHVibGljXCJdfSJ9.y8c0DiQ_Rbz9K2_PctW9kc415vhQJzGsZHfMObGJpR4
+        case "print":
             message.channel.send(
-                `Bearer Token: ${bearer_token} | Driver Last Name: ${driver_last_name} | Driver Lisence Number: ${driver_license_num} | Driver Keyword: ${driver_keyword}`
+                `Bearer Token: ${bearer_token} | Driver Last Name: ${driver_last_name} | Driver License Number: ${driver_license_num} | Driver Keyword: ${driver_keyword}`
             )
             break
     }
